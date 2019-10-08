@@ -110,16 +110,24 @@ public class CCCoreDataController: NSObject {
 	
 	///Creates a child context of the master managedObjectContext with a private queue concurrency type
 	///- returns: NSManagedObjectContext
-	class func createChildManagedObjectContext() -> NSManagedObjectContext{
+	public class func createChildManagedObjectContext() -> NSManagedObjectContext{
 		let childContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.privateQueueConcurrencyType)
 		childContext.parent = CCCoreDataController.shared.managedObjectContext
 		return childContext
 	}
 	
 	
+	///Creates a private managedObjectContext with a private queue concurrency type
+	///- returns: NSManagedObjectContext
+	public class func createPrivateManagedObjectContext() -> NSManagedObjectContext{
+		let privateContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.privateQueueConcurrencyType)
+		return privateContext
+	}
+	
+	
 	///Saves the managed object context. In a future version this will be changed to the master managed object context when it becomes necessary to add a background or child context
 	///- returns: Void
-	func saveContext () {
+	public func saveContext () {
 		if let moc = self.managedObjectContext {
 			var error: NSError? = nil
 			if moc.hasChanges {
