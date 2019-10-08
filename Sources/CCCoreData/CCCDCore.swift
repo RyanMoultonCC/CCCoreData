@@ -10,7 +10,7 @@ import CoreData
 
 @objc public protocol RemoteObject {
 	var serverId: Int64 { get set }
-	var serverUUID: UUID? { get set }
+	var serverUUID: UUID { get set }
 }
 
 public extension RemoteObject where Self: NSManagedObject {
