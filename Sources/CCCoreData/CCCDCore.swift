@@ -10,6 +10,7 @@ import CoreData
 
 @objc public protocol RemoteObject {
 	var serverId: Int64 { get set }
+	var serverUUID: UUID? { get set }
 }
 
 public extension RemoteObject where Self: NSManagedObject {
@@ -19,6 +20,15 @@ public extension RemoteObject where Self: NSManagedObject {
 		
 		let insertedObject = NSEntityDescription.insertNewObject(forEntityName: Self.entity().name!, into: context) as! RemoteObject
 		insertedObject.serverId = serverId
+		return insertedObject as! Self
+	}
+	
+	
+	static func fetchOrCreateObjectWithServerUUID(_ serverUUID: UUID, context: NSManagedObjectContext) -> Self {
+		if let existing = objectWithServerUUID(serverUUID, context: context) { return existing }
+		
+		let insertedObject = NSEntityDescription.insertNewObject(forEntityName: Self.entity().name!, into: context) as! RemoteObject
+		insertedObject.serverUUID = serverUUID
 		return insertedObject as! Self
 	}
 	
@@ -37,6 +47,26 @@ public extension RemoteObject where Self: NSManagedObject {
 			return results.first
 		} catch {
 			print("Failed to fetch object with serverId:\(serverId) error:\(error)")
+		}
+		return nil
+	}
+	
+	
+	
+	static func objectWithServerUUID(_ serverUUID: UUID, context: NSManagedObjectContext) -> Self? {
+		let fetchRequest: NSFetchRequest<Self> = NSFetchRequest(entityName: Self.entity().name!)
+		
+		let predicate = NSPredicate(format: "serverUUID == %@", serverUUID.uuidString)
+		let descriptor = NSSortDescriptor(key: #keyPath(RemoteObject.serverUUID), ascending: true)
+		fetchRequest.predicate = predicate
+		fetchRequest.sortDescriptors = [descriptor]
+		fetchRequest.fetchLimit = 1
+		
+		do {
+			let results = try context.fetch(fetchRequest)
+			return results.first
+		} catch {
+			print("Failed to fetch object with serverId:\(serverUUID) error:\(error)")
 		}
 		return nil
 	}
