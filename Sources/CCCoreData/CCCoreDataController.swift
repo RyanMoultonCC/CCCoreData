@@ -46,8 +46,9 @@ public class CCCoreDataController: NSObject {
 		let url_string = url.absoluteString;
 		print("database url:  \(url_string)");
 		
-		if !FileManager.default.fileExists(atPath: url.path) {
-			let sourceSqliteURLs = [Bundle.main.url(forResource: databaseFileName, withExtension: "sqlite")!/*, NSBundle.mainBundle().URLForResource("Carnival_Trivia", withExtension: "sqlite-wal")!, NSBundle.mainBundle().URLForResource("Carnival_Trivia", withExtension: "sqlite-shm")!*/]
+		//Check if we have a source file to copy from
+		if !FileManager.default.fileExists(atPath: url.path), let sourceSQLiteURL = Bundle.main.url(forResource: databaseFileName, withExtension: "sqlite") {
+			let sourceSqliteURLs = [sourceSQLiteURL/*, NSBundle.mainBundle().URLForResource("Carnival_Trivia", withExtension: "sqlite-wal")!, NSBundle.mainBundle().URLForResource("Carnival_Trivia", withExtension: "sqlite-shm")!*/]
 			
 			let destSqliteURLs = [self.applicationDocumentsDirectory.appendingPathComponent("\(databaseFileName).sqlite")/*,
 				self.applicationDocumentsDirectory.URLByAppendingPathComponent("Carnival_Trivia.sqlite-wal"),
