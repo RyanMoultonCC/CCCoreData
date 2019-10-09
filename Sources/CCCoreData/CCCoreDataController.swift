@@ -119,8 +119,9 @@ public class CCCoreDataController: NSObject {
 	
 	///Creates a private managedObjectContext with a private queue concurrency type
 	///- returns: NSManagedObjectContext
-	public class func createPrivateManagedObjectContext() -> NSManagedObjectContext{
+	public class func createPrivateManagedObjectContext() -> NSManagedObjectContext {
 		let privateContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.privateQueueConcurrencyType)
+		privateContext.persistentStoreCoordinator = CCCoreDataController.shared.persistentStoreCoordinator
 		return privateContext
 	}
 	
