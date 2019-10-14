@@ -11,6 +11,7 @@ public class CCCoreDataController: NSObject {
 	public var modelName: String = ""
 	public var databaseFileName: String = ""
 	public var moc: NSManagedObjectContext?
+	private var model: NSManagedObjectModel?
 	
 	
 	//Singleton instance of CCCoreDataController
@@ -25,13 +26,18 @@ public class CCCoreDataController: NSObject {
 	}()
 	
 	
-	public lazy var managedObjectModel: NSManagedObjectModel = {
+	private lazy var managedObjectModel: NSManagedObjectModel = {
+		if (self.model != nil){
+			return self.model!
+		}
+		
 		//Make sure the model name is not empty. This needs to be set when the application launches
 		guard modelName.count != 0 else { fatalError("model name needs to be set before trying to access CCCoreData") }
 		
 		// The managed object model for the application. This property is not optional. It is a fatal error for the application not to be able to find and load its model.
 		let modelURL = Bundle.main.url(forResource: modelName, withExtension: "momd")!
-		return NSManagedObjectModel(contentsOf: modelURL)!
+		self.model = NSManagedObjectModel(contentsOf: modelURL)!
+		return self.model!
 	}()
 	
 	
