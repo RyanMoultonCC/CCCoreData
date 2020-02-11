@@ -25,7 +25,9 @@ import CoreData
 public extension RemoteObject where Self: NSManagedObject {
 
 	static func fetchAll(_ context: NSManagedObjectContext) -> [Self] {
-		let fetchRequest: NSFetchRequest<Self> = Self.fetchRequest() as! NSFetchRequest<Self>// NSFetchRequest(entityName: Self.entity().name!)
+		guard let fetchRequest: NSFetchRequest<Self> = Self.fetchRequest() as? NSFetchRequest<Self> else { // NSFetchRequest(entityName: Self.entity().name!)
+			return [] as [Self]
+		}
 		
 		do {
 			let results = try context.fetch(fetchRequest)
@@ -33,6 +35,7 @@ public extension RemoteObject where Self: NSManagedObject {
 		} catch {
 			print("Failed to fetch objects, error:\(error)")
 		}
+		
 		return [] as [Self]
 	}
 }
@@ -51,7 +54,9 @@ public extension RemoteObjectWID where Self: NSManagedObject {
 	
 	
 	static func objectWithServerId(_ serverId: Int64, context: NSManagedObjectContext) -> Self? {
-		let fetchRequest: NSFetchRequest<Self> = Self.fetchRequest() as! NSFetchRequest<Self>// NSFetchRequest(entityName: Self.entity().name!)
+		guard let fetchRequest: NSFetchRequest<Self> = Self.fetchRequest() as? NSFetchRequest<Self> else { // NSFetchRequest(entityName: Self.entity().name!)
+			return nil
+		}
 		
 		let predicate = NSPredicate(format: "serverId == %d", serverId)
 		let descriptor = NSSortDescriptor(key: #keyPath(RemoteObjectWID.serverId), ascending: true)
@@ -65,6 +70,7 @@ public extension RemoteObjectWID where Self: NSManagedObject {
 		} catch {
 			print("Failed to fetch object with serverId:\(serverId) error:\(error)")
 		}
+		
 		return nil
 	}
 }
@@ -84,7 +90,9 @@ public extension RemoteObjectWUUID where Self: NSManagedObject {
 	
 	
 	static func objectWithServerUUID(_ serverUUID: UUID, context: NSManagedObjectContext) -> Self? {
-		let fetchRequest: NSFetchRequest<Self> = Self.fetchRequest() as! NSFetchRequest<Self>// NSFetchRequest(entityName: Self.entity().name!)
+		guard let fetchRequest: NSFetchRequest<Self> = Self.fetchRequest() as? NSFetchRequest<Self> else {// NSFetchRequest(entityName: Self.entity().name!)
+			return nil
+		}
 		
 		let predicate = NSPredicate(format: "serverUUID == %@", serverUUID.uuidString)
 		let descriptor = NSSortDescriptor(key: #keyPath(RemoteObjectWUUID.serverUUID), ascending: true)
